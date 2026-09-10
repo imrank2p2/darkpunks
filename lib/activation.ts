@@ -34,7 +34,13 @@ async function signerContext() {
 }
 
 export async function readDarkBalance(address: string) {
-  if (!window.ethereum) return { raw: 0n, formatted: "0", decimals: 18 };
+  if (!window.ethereum) {
+  return {
+    raw: BigInt(0),
+    formatted: "0",
+    decimals: 18,
+  };
+}
   const provider = new BrowserProvider(window.ethereum as any);
   const token = new Contract(DARK_TOKEN_ADDRESS, ERC20_ABI, provider);
   const [raw, decimals] = await Promise.all([token.balanceOf(address), token.decimals()]);
@@ -55,7 +61,7 @@ export async function readActivationState(tokenId: number) {
   return {
     activated: Boolean(activated),
     pendingEth: formatEther(pending),
-    weight: `${Number(weightRaw / 10n ** 16n) / 100}X`,
+    weight: `${Number(weightRaw / (BigInt(10) ** BigInt(16))) / 100}X`,
     activationNumber: Number(info[3]),
   };
 }
