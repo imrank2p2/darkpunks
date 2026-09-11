@@ -1,0 +1,344 @@
+.protocol-page {
+  min-height: 100vh;
+  background: #061510;
+  color: #e6e3dc;
+  font-family: monospace;
+}
+
+.protocol-wrap {
+  width: min(1160px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+/* HERO */
+
+.protocol-hero {
+  padding: 80px 0 75px;
+  border-bottom: 1px solid #1c342b;
+}
+
+.protocol-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 11px;
+  border: 1px solid #28513f;
+  background: rgba(101, 212, 134, 0.05);
+  color: #6ddd91;
+  font-size: 9px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.protocol-badge span {
+  width: 6px;
+  height: 6px;
+  background: #65d486;
+}
+
+.protocol-hero h1 {
+  margin: 25px 0 0;
+  font-size: clamp(48px, 5.5vw, 76px);
+  line-height: 0.92;
+  letter-spacing: -4px;
+  color: #e6e3dc;
+}
+
+.protocol-hero h1 strong {
+  color: #65d486;
+}
+
+.protocol-intro {
+  max-width: 700px;
+  margin-top: 28px;
+  color: #aeb8b2;
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+.protocol-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.protocol-mint-btn,
+.protocol-outline-btn {
+  padding: 14px 20px;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-decoration: none;
+}
+
+.protocol-mint-btn {
+  background: #65d486;
+  border: 1px solid #65d486;
+  color: #071712;
+}
+
+.protocol-outline-btn {
+  border: 1px solid #36584a;
+  color: #d8d6cf;
+}
+
+/* SECTIONS */
+
+.protocol-section {
+  padding: 75px 0;
+  border-bottom: 1px solid #1c342b;
+}
+
+.section-label {
+  color: #65d486;
+  font-size: 9px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.protocol-section h2,
+.protocol-final h2 {
+  margin: 16px 0 35px;
+  color: #e6e3dc;
+  font-size: clamp(32px, 4vw, 52px);
+  line-height: 1;
+  letter-spacing: -2px;
+}
+
+/* HOW IT WORKS */
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border: 1px solid #1d382e;
+}
+
+.step-card {
+  min-height: 210px;
+  padding: 30px;
+  border-right: 1px solid #1d382e;
+  border-bottom: 1px solid #1d382e;
+  background: #081a14;
+}
+
+.step-number {
+  color: #65d486;
+  font-size: 11px;
+}
+
+.step-card h3 {
+  margin: 50px 0 0;
+  color: #e6e3dc;
+  font-size: 20px;
+  letter-spacing: 0.5px;
+}
+
+.step-card p {
+  margin-top: 15px;
+  color: #a6b0aa;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+/* PATH */
+
+.dark-path-section {
+  background: #061510;
+}
+
+.path-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+
+.path-item {
+  min-height: 95px;
+  padding: 18px;
+  border: 1px solid #1d382e;
+  background: #081a14;
+}
+
+.path-item span {
+  color: #87938c;
+  font-size: 10px;
+}
+
+.path-item strong {
+  display: block;
+  margin-top: 14px;
+  color: #65d486;
+  font-size: 11px;
+}
+
+/* REWARDS */
+
+.rewards-section {
+  background: #071712;
+}
+
+.reward-heading {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.reward-heading h2 {
+  margin-bottom: 18px;
+}
+
+.reward-heading p {
+  color: #a6b0aa;
+  font-size: 13px;
+  line-height: 1.9;
+}
+/* STOCKS */
+
+.stocks-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin-top: 45px;
+}
+
+.stock-card {
+  position: relative;
+  min-height: 170px;
+  padding: 20px;
+  border: 1px solid #1d382e;
+  background: #081a14;
+}
+
+.stock-coming {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  color: #65d486;
+  font-size: 8px;
+  opacity: 0.75;
+}
+
+.stock-logo {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stock-logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.stock-ticker {
+  margin-top: 24px;
+  color: #e6e3dc;
+  font-size: 19px;
+  font-weight: bold;
+}
+
+.stock-name {
+  margin-top: 7px;
+  color: #98a49d;
+  font-size: 10px;
+}
+
+.protocol-note {
+  max-width: 900px;
+  margin: 25px auto 0;
+  padding: 13px 18px;
+  border: 1px solid #1d382e;
+  color: #7e8b84;
+  text-align: center;
+  font-size: 8px;
+  line-height: 1.7;
+}
+
+/* FINAL */
+
+.protocol-final {
+  padding: 75px 0;
+  background: #071712;
+}
+
+.final-box {
+  padding: 65px 30px;
+  text-align: center;
+  border: 1px solid #1d382e;
+  background: #081a14;
+}
+
+.final-box h2 {
+  margin: 28px 0 0;
+  font-size: clamp(46px, 5vw, 66px);
+  letter-spacing: -3px;
+}
+
+.final-box p {
+  margin: 25px auto;
+  color: #a6b0aa;
+  font-size: 13px;
+  line-height: 1.9;
+}
+
+/* MOBILE */
+
+@media (max-width: 900px) {
+  .stocks-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .path-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .protocol-wrap {
+    width: calc(100% - 30px);
+  }
+
+  .protocol-hero {
+    padding: 60px 0;
+  }
+
+  .protocol-hero h1 {
+    font-size: 54px;
+  }
+
+  .protocol-section {
+    padding: 60px 0;
+  }
+
+  .steps-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .step-card {
+    border-right: none;
+    min-height: 190px;
+  }
+
+  .step-card:nth-child(3) {
+    border-bottom: 1px solid #1d382e;
+  }
+
+  .path-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stocks-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stock-card {
+    min-height: 145px;
+  }
+
+  .final-box {
+    padding: 50px 20px;
+  }
+}

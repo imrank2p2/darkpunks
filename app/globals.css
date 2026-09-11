@@ -1786,3 +1786,142 @@ button { cursor: pointer; }
     letter-spacing: 0.12em;
   }
 }
+/* ================================
+   DARK PROTOCOL PAGE
+================================ */
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Protocol stock cards */
+
+.protocol-stock-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #0a0a0a;
+  padding: 20px;
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease,
+    transform 0.25s ease;
+}
+
+.protocol-stock-card:hover {
+  border-color: rgba(183, 255, 60, 0.65);
+  background: #101010;
+  transform: translateY(-3px);
+}
+
+.protocol-stock-logo {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px;
+}
+
+.protocol-stock-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Subtle protocol glow */
+
+.protocol-glow {
+  position: relative;
+}
+
+.protocol-glow::before {
+  content: "";
+  position: absolute;
+  inset: -100px;
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    rgba(183, 255, 60, 0.08) 0%,
+    transparent 60%
+  );
+}
+
+/* Coming soon badge */
+
+.protocol-coming-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(183, 255, 60, 0.35);
+  background: rgba(183, 255, 60, 0.08);
+  padding: 8px 14px;
+  color: #b7ff3c;
+  font-family: monospace;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+}
+
+.protocol-coming-badge::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  background: #b7ff3c;
+  animation: protocolPulse 1.4s infinite;
+}
+
+@keyframes protocolPulse {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.35;
+    transform: scale(0.7);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Flow cards */
+
+.protocol-flow-card {
+  position: relative;
+  min-height: 160px;
+  overflow: hidden;
+}
+
+.protocol-flow-card::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background: #b7ff3c;
+  transition: width 0.3s ease;
+}
+
+.protocol-flow-card:hover::after {
+  width: 100%;
+}
+
+/* Mobile */
+
+@media (max-width: 640px) {
+  .protocol-stock-card {
+    padding: 16px;
+  }
+
+  .protocol-stock-logo {
+    width: 42px;
+    height: 42px;
+  }
+}
