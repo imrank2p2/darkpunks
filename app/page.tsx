@@ -439,33 +439,16 @@ export default function Home() {
         </div>
 
         <nav>
-          <a href="#terminal">
-            LAB
-          </a>
+          <a href="#lab">LAB</a>
+          <a href="#field">FIELD</a>
+          <a href="#rewards">REWARDS</a>
 
-          <a href="#field">
-            FIELD
-          </a>
+          <a href="/protocol">PROTOCOL</a>
 
-          <a href="#rewards">
-            REWARDS
-          </a>
-
-          <a href="#how-it-works">
-            HOW IT WORKS
-          </a>
-
-          <a href="#docs">
-            DOCS
-          </a>
-
-          <a href="#legal">
-            LEGAL
-          </a>
-
-          <a href="#network">
-            CHAIN
-          </a>
+          <a href="#how-it-works">HOW IT WORKS</a>
+          <a href="#docs">DOCS</a>
+          <a href="#legal">LEGAL</a>
+          <a href="#chain">CHAIN</a>
         </nav>
 
         <button
