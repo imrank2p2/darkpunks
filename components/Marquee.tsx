@@ -2,7 +2,7 @@
 
 const items = [
   "0.0002 ETH MINT",
-  "2600 NFTs",
+  "426 NFTs",
   "PIXEL ART",
   "GENESIS COLLECTION",
   "COMMUNITY FIRST",

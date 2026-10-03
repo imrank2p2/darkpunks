@@ -62,10 +62,86 @@ export async function connectWallet() {
 }
 
 export async function readOwnedTokenIds(address: string) {
-  const response = await fetch(`/api/owned-nfts?address=${encodeURIComponent(address)}`, { cache: "no-store" });
-  const data = await response.json() as { ids?: number[]; error?: string };
-  if (!response.ok) throw new Error(data.error || "Could not load NFT ownership from Blockscout.");
-  return { balance: data.ids?.length || 0, ids: data.ids || [] };
+  const provider = getProvider();
+  const owner = address.toLowerCase();
+  const contract = "0x7553539C27B550d14fcdccd19fa78f8F6CD057BB";
+
+  const pad32 = (value: string) => value.replace(/^0x/, "").padStart(64, "0");
+  const call = async (data: string) => {
+    const result = await provider.request({
+      method: "eth_call",
+      params: [{ to: contract, data }, "latest"],
+    });
+    return String(result);
+  };
+
+  const decodeUint = (value: string) => {
+    const hex = value.replace(/^0x/, "");
+    if (!hex) throw new Error("EMPTY RPC RESPONSE");
+    return Number(BigInt(`0x${hex}`));
+  };
+
+  // Dark Punks is an ERC-721 collection. Prefer ERC-721Enumerable when the
+  // deployed contract exposes tokenOfOwnerByIndex. This gives us the exact
+  // NFTs in the connected wallet without depending on an external indexer/API.
+  try {
+    const balance = decodeUint(await call(`0x70a08231${pad32(owner)}`));
+    if (balance === 0) return { balance: 0, ids: [] };
+
+    const ids: number[] = [];
+    const CHUNK = 12;
+
+    for (let start = 0; start < balance; start += CHUNK) {
+      const end = Math.min(start + CHUNK, balance);
+      const batch = await Promise.all(
+        Array.from({ length: end - start }, async (_, offset) => {
+          const index = start + offset;
+          const result = await call(
+            `0x2f745c59${pad32(owner)}${pad32(`0x${index.toString(16)}`)}`
+          );
+          return decodeUint(result);
+        })
+      );
+      ids.push(...batch);
+    }
+
+    return {
+      balance: ids.length,
+      ids: [...new Set(ids)].sort((a, b) => a - b),
+    };
+  } catch {
+    // If the contract is not ERC-721Enumerable, fall back to ownerOf().
+    // The collection has 426 NFTs, so scanning the token range is bounded.
+    const ids: number[] = [];
+    const CHUNK = 20;
+
+    for (let start = 1; start <= 426; start += CHUNK) {
+      const end = Math.min(start + CHUNK - 1, 426);
+      const batch = await Promise.all(
+        Array.from({ length: end - start + 1 }, async (_, offset) => {
+          const tokenId = start + offset;
+          try {
+            const result = await call(
+              `0x6352211e${pad32(`0x${tokenId.toString(16)}`)}`
+            );
+            const tokenOwner = `0x${result.slice(-40)}`.toLowerCase();
+            return tokenOwner === owner ? tokenId : null;
+          } catch {
+            return null;
+          }
+        })
+      );
+
+      for (const id of batch) {
+        if (id !== null) ids.push(id);
+      }
+    }
+
+    return {
+      balance: ids.length,
+      ids: ids.sort((a, b) => a - b),
+    };
+  }
 }
 
 export async function getConnectedAccount() {

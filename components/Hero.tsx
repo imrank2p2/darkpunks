@@ -62,7 +62,7 @@ export default function Hero() {
             </div>
 
             <div className="grid gap-2 font-mono">
-              <div className="border border-black bg-white p-4 shadow-[3px_3px_0_#111]"><div className="text-[9px] font-bold text-black/45">SUPPLY</div><div className="mt-2 text-3xl font-black">2,600</div><div className="mt-1 text-[9px] font-bold">PLAYERS</div></div>
+              <div className="border border-black bg-white p-4 shadow-[3px_3px_0_#111]"><div className="text-[9px] font-bold text-black/45">SUPPLY</div><div className="mt-2 text-3xl font-black">426</div><div className="mt-1 text-[9px] font-bold">PLAYERS</div></div>
               <div className="border border-black bg-white p-4 shadow-[3px_3px_0_#111]"><div className="text-[9px] font-bold text-black/45">HOLDERS</div><div className="mt-2 text-3xl font-black">{holders.toLocaleString()}</div><div className="mt-1 text-[9px] font-bold">READ FROM CHAIN</div></div>
               <div className="border border-black bg-black p-4 text-white shadow-[3px_3px_0_#b7ff3c]"><div className="text-[9px] font-bold text-white/45">ARENA</div><div className="mt-2 text-3xl font-black text-[#b7ff3c]">08:00:00</div><div className="mt-1 text-[9px] font-bold">SESSION LENGTH</div></div>
             </div>

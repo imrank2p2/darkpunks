@@ -25,7 +25,7 @@ export default function FloatingStats() {
         </p>
 
         <h2 className="mt-2 text-3xl font-black">
-          2,600
+          426
         </h2>
 
         <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/10">

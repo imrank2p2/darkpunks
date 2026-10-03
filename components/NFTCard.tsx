@@ -98,7 +98,7 @@ export default function NFTCard() {
               </p>
 
               <h3 className="mt-2 text-xl font-bold">
-                2,600
+                426
               </h3>
 
             </div>

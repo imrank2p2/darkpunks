@@ -52,36 +52,69 @@ export default function Home() {
   const [wallet, setWallet] = useState("");
   const [ids, setIds] = useState<number[]>([]);
   const [selected, setSelected] = useState<number>(311);
+  const [page, setPage] = useState(1);
   const [active, setActive] = useState<number[]>([]);
   const [darkBalance, setDarkBalance] = useState("0");
   const [claimableEth, setClaimableEth] = useState("0");
   const [weight, setWeight] = useState("0.00X");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [toast, setToast] = useState("");
+  const [nftLoading, setNftLoading] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [showConsent, setShowConsent] = useState(true);
 
   const isActive = active.includes(selected);
 
+  const ITEMS_PER_PAGE = 12;
+  const totalPages = Math.max(1, Math.ceil(ids.length / ITEMS_PER_PAGE));
+
+  function showToast(message: string) {
+    setError("");
+    setToast(message);
+    window.setTimeout(() => setToast(""), 3500);
+  }
+
+  function friendlyError(error: unknown, fallback = "SOMETHING WENT WRONG") {
+    const raw = error instanceof Error ? error.message : String(error || "");
+    const text = raw.toUpperCase();
+
+    if (text.includes("REWARD ENGINE NOT ENABLED YET")) return "REWARD ENGINE NOT ENABLED YET";
+    if (text.includes("USER REJECTED") || text.includes("ACTION_REJECTED") || text.includes("DENIED")) return "TRANSACTION CANCELLED";
+    if (text.includes("INSUFFICIENT")) return "INSUFFICIENT FUNDS";
+    if (text.includes("CHAIN") || text.includes("SWITCH")) return "SWITCH TO ROBINHOOD CHAIN";
+    if (text.includes("NO WALLET") || text.includes("WALLET NOT FOUND")) return "WALLET NOT FOUND";
+    if (text.includes("NFT") || text.includes("BLOCKSCOUT") || text.includes("OWNERSHIP")) return "COULD NOT LOAD YOUR NFTS";
+    return fallback;
+  }
+
   const visiblePunks = useMemo(() => {
-    return ids.length ? ids.slice(0, 18) : SHOWCASE_IDS;
-  }, [ids]);
+    // Before a wallet is connected, keep the public showcase.
+    // After connection, show only NFTs actually owned by that wallet.
+    if (!wallet) return SHOWCASE_IDS;
+    const start = (page - 1) * ITEMS_PER_PAGE;
+    return ids.slice(start, start + ITEMS_PER_PAGE);
+  }, [ids, page, wallet]);
 
   async function loadOwnedPunks(account: string) {
-    const result = await readOwnedTokenIds(account);
-
-    setIds(result.ids);
-
-    if (result.ids[0] !== undefined) {
-      setSelected(result.ids[0]);
-    }
-
+    setNftLoading(true);
     try {
-      const balance = await readDarkBalance(account);
-      setDarkBalance(balance.formatted);
-    } catch {
-      setDarkBalance("0");
+      const result = await readOwnedTokenIds(account);
+
+      setIds(result.ids);
+      setPage(1);
+
+      if (result.ids[0] !== undefined) setSelected(result.ids[0]);
+
+      try {
+        const balance = await readDarkBalance(account);
+        setDarkBalance(balance.formatted);
+      } catch {
+        setDarkBalance("0");
+      }
+    } finally {
+      setNftLoading(false);
     }
   }
 
@@ -105,11 +138,7 @@ export default function Home() {
           : []
       );
     } catch (e) {
-      setError(
-        e instanceof Error
-          ? e.message
-          : "Could not read activation state"
-      );
+      showToast(friendlyError(e, "COULD NOT READ ACTIVATION STATE"));
     }
   }
 
@@ -129,11 +158,7 @@ export default function Home() {
         }
       } catch (e) {
         if (!cancelled) {
-          setError(
-            e instanceof Error
-              ? e.message
-              : "Could not load DARK PUNKS"
-          );
+          showToast(friendlyError(e, "COULD NOT LOAD YOUR NFTS"));
         }
       }
     });
@@ -147,16 +172,13 @@ export default function Home() {
 
       setWallet(next);
       setIds([]);
+      setPage(1);
       setActive([]);
 
       if (!next) return;
 
       loadOwnedPunks(next).catch((e) => {
-        setError(
-          e instanceof Error
-            ? e.message
-            : "Could not load DARK PUNKS"
-        );
+        showToast(friendlyError(e, "COULD NOT LOAD YOUR NFTS"));
       });
     };
 
@@ -225,15 +247,16 @@ export default function Home() {
     try {
       const account = await connectWallet();
 
+      // Wallet connection itself is successful even if the NFT indexer is temporarily unavailable.
       setWallet(account);
 
-      await loadOwnedPunks(account);
+      try {
+        await loadOwnedPunks(account);
+      } catch (e) {
+        showToast(friendlyError(e, "COULD NOT LOAD YOUR NFTS"));
+      }
     } catch (e) {
-      setError(
-        e instanceof Error
-          ? e.message
-          : "Wallet connection failed"
-      );
+      showToast(friendlyError(e, "WALLET CONNECTION FAILED"));
     } finally {
       setBusy(false);
     }
@@ -241,21 +264,17 @@ export default function Home() {
 
   async function activate() {
     if (!wallet) {
-      setError("CONNECT WALLET FIRST");
+      showToast("CONNECT WALLET FIRST");
       return;
     }
 
     if (!ids.includes(selected)) {
-      setError(
-        "SELECT AN OWNED DARK PUNK FIRST"
-      );
+      showToast("SELECT AN OWNED DARK PUNK FIRST");
       return;
     }
 
     if (!ACTIVATION_CONTRACT_ADDRESS) {
-      setError(
-        "ACTIVATION CONTRACT NOT DEPLOYED YET"
-      );
+      showToast("ACTIVATION CONTRACT NOT DEPLOYED YET");
       return;
     }
 
@@ -276,11 +295,7 @@ export default function Home() {
 
       setActiveStep(3);
     } catch (e) {
-      setError(
-        e instanceof Error
-          ? e.message
-          : "ACTIVATION FAILED"
-      );
+      showToast(friendlyError(e, "ACTIVATION FAILED"));
     } finally {
       setBusy(false);
     }
@@ -288,14 +303,12 @@ export default function Home() {
 
   async function claim() {
     if (!wallet) {
-      setError("CONNECT WALLET FIRST");
+      showToast("CONNECT WALLET FIRST");
       return;
     }
 
     if (!ACTIVATION_CONTRACT_ADDRESS) {
-      setError(
-        "ACTIVATION CONTRACT NOT DEPLOYED YET"
-      );
+      showToast("ACTIVATION CONTRACT NOT DEPLOYED YET");
       return;
     }
 
@@ -309,11 +322,7 @@ export default function Home() {
 
       setActiveStep(4);
     } catch (e) {
-      setError(
-        e instanceof Error
-          ? e.message
-          : "CLAIM FAILED"
-      );
+      showToast(friendlyError(e, "CLAIM FAILED"));
     } finally {
       setBusy(false);
     }
@@ -485,9 +494,9 @@ export default function Home() {
         </span>
       </div>
 
-      {error && (
-        <div className="error">
-          ERROR // {error}
+      {toast && (
+        <div className="toast" role="status" aria-live="polite">
+          {toast}
         </div>
       )}
 
@@ -508,7 +517,7 @@ export default function Home() {
             </h1>
 
             <p>
-              2222 PUNKS. ONE COLLECTION.
+              426 PUNKS. ONE COLLECTION.
             </p>
 
             <p>
@@ -706,7 +715,7 @@ export default function Home() {
 
           <article>
             <b>
-              2,222
+              426
             </b>
 
             <span>
@@ -1106,6 +1115,42 @@ export default function Home() {
 
           </div>
 
+          {wallet && ids.length > ITEMS_PER_PAGE && (
+            <div className="field-pagination">
+              <button
+                type="button"
+                disabled={page === 1}
+                onClick={() => setPage((current) => Math.max(1, current - 1))}
+              >
+                PREV
+              </button>
+
+              <span>
+                PAGE {page} / {totalPages}
+              </span>
+
+              <button
+                type="button"
+                disabled={page === totalPages}
+                onClick={() => setPage((current) => Math.min(totalPages, current + 1))}
+              >
+                NEXT
+              </button>
+            </div>
+          )}
+
+          {wallet && ids.length === 0 && (
+            <div className="selected-unit">
+              <span>YOUR WALLET</span>
+              <b>{nftLoading ? "SYNCING DARK PUNKS..." : "NO DARK PUNKS FOUND"}</b>
+              <small>
+                {nftLoading
+                  ? "READING YOUR DARK PUNKS FROM ROBINHOOD CHAIN..."
+                  : "THIS WALLET DOES NOT OWN A DARK PUNK, OR NFT DATA COULD NOT BE READ."}
+              </small>
+            </div>
+          )}
+
           <div className="selected-unit">
 
             <span>
@@ -1118,7 +1163,7 @@ export default function Home() {
 
             <small>
               {wallet
-                ? "OWNED PUNK LOADED"
+                ? (nftLoading ? "SYNCING YOUR DARK PUNKS..." : ids.length ? "OWNED PUNK LOADED" : "NO OWNED PUNK SELECTED")
                 : "CONNECT WALLET TO LOAD OWNED PUNKS"}
             </small>
 
@@ -1285,7 +1330,7 @@ export default function Home() {
             <h3>THE COLLECTION</h3>
             <p>
               DARK PUNKS IS A COLLECTION
-              OF 2,222 NFTS.
+              OF 426 NFTS.
             </p>
           </article>
 

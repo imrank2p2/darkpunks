@@ -121,6 +121,31 @@ button { cursor: pointer; }
   color: #8d321d;
 }
 
+.toast {
+  position: fixed;
+  top: 76px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  max-width: min(92vw, 520px);
+  padding: 12px 18px;
+  border: 2px solid #111;
+  background: #b7ff3c;
+  color: #111;
+  box-shadow: 5px 5px 0 #111;
+  font-family: monospace;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-align: center;
+  animation: toastIn .18s ease-out;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translate(-50%, -8px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
 .hero {
   background: var(--dark);
   color: #d6ded8;
@@ -545,6 +570,37 @@ button { cursor: pointer; }
   color: white;
   background: rgba(0,0,0,.55);
   font-size: 8px;
+}
+
+.field-pagination {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 10px 0 2px;
+  font-family: monospace;
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.field-pagination button {
+  border: 1px solid var(--line);
+  background: #111;
+  color: #fff;
+  padding: 7px 10px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.field-pagination button:hover:not(:disabled) {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.field-pagination button:disabled {
+  opacity: .35;
+  cursor: not-allowed;
 }
 
 .selected-unit {
